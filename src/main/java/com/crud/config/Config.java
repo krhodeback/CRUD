@@ -22,7 +22,7 @@ import java.util.Properties;
 @Configuration
 @PropertySource(value = "classpath:db.properties")
 @EnableTransactionManagement
-@ComponentScan(basePackages = "com")
+@ComponentScan(basePackages = {"com.crud.dao", "com.crud.service"})
 
 public class Config {
     Environment env;
@@ -52,6 +52,10 @@ public class Config {
         properties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
         properties.setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
 //        properties.setProperty("hibernate.connection.autocommit", env.getProperty("hibernate.connection.autocommit"));
+        properties.setProperty("hibernate.c3p0.min_size", env.getProperty("hibernate.c3p0.min_size"));
+        properties.setProperty("hibernate.c3p0.max_size", env.getProperty("hibernate.c3p0.max_size"));
+        properties.setProperty("hibernate.c3p0.timeout", env.getProperty("hibernate.c3p0.timeout"));
+
         return properties;
     }
 
@@ -62,7 +66,8 @@ public class Config {
         dataSourceConfig.setJdbcUrl(env.getRequiredProperty("db.url"));
         dataSourceConfig.setUsername(env.getRequiredProperty("db.username"));
         dataSourceConfig.setPassword(env.getRequiredProperty("db.password"));
-
+        dataSourceConfig.addDataSourceProperty("autoReconnect", true);
+        dataSourceConfig.setMaxLifetime(45000);
         return new HikariDataSource(dataSourceConfig);
     }
 

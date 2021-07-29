@@ -18,22 +18,18 @@ public class Main {
     public static void main(String[] args) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
         UserService userService = context.getBean(UserServiceImpl.class);
-        User user = new User();
-        user.setLogin("efim");
-        user.setEmail("savin.efim2@gmail.com");
-        userService.insert(user);
-        User secondUser = new User();
-        secondUser.setLogin("seconduser");
-        secondUser.setEmail("email@mail.com");
-        userService.insert(secondUser);
-        System.err.println(userService.findAll());
-        user.setId(1);
-        userService.deleteById(1l);
-        System.err.println(userService.findAll());
-        secondUser.setLogin("changedusername");
-        secondUser.setId(2);
-        userService.update(secondUser);
-        System.err.println(userService.findAll());
+for(int i = 0 ; i<10 ; i++){
+    User user = new User("user" + i,"email"+i+"@mail.ru");
+    userService.insert(user);
+}
+    //        System.err.println(userService.findAll());
+//        user.setId(1);
+//        userService.deleteById(1l);
+//        System.err.println(userService.findAll());
+//        secondUser.setLogin("changedusername");
+//        secondUser.setId(2);
+//        userService.update(secondUser);
+//        System.err.println(userService.findAll());
 
 
     }

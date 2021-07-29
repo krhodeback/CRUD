@@ -8,11 +8,13 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 @Repository
+
 public class UserDAOImpl implements UserDAO {
 
     private final EntityManagerFactory factory;
@@ -29,6 +31,7 @@ public class UserDAOImpl implements UserDAO {
             manager.getTransaction().begin();
             manager.persist(user);
             manager.getTransaction().commit();
+            manager.close();
             System.err.println("User " + user.getLogin() + " have been added");
         } catch (Exception e) {
             System.err.println("Cant insert " + user.getLogin() + " exception : " + e.getMessage());
@@ -44,6 +47,7 @@ public class UserDAOImpl implements UserDAO {
             User user = manager.find(User.class, id);
             manager.remove(user);
             manager.getTransaction().commit();
+            manager.close();
             System.err.println("User " + user.getLogin() + " have been deleted");
         } catch (Exception e) {
             System.err.println("Cant delete  exception :" + e.getMessage());
@@ -56,7 +60,6 @@ public class UserDAOImpl implements UserDAO {
         List<User> userList = new ArrayList<>();
         try {
             userList = manager.createQuery("select u from User u", User.class).getResultList();
-            manager.flush();
             manager.close();
         } catch (Exception e) {
             System.out.println("Cant get all users : " + e.getMessage());
@@ -71,6 +74,7 @@ public class UserDAOImpl implements UserDAO {
             entityManager.getTransaction().begin();
             entityManager.merge(user);
             entityManager.getTransaction().commit();
+            entityManager.close();
             System.out.println("User " + user.getLogin() + " have been updated");
         } catch (Exception e) {
             System.out.println("Cant update user exception :" + e.getMessage());
