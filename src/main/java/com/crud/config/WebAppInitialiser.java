@@ -4,7 +4,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 
 public class WebAppInitialiser extends AbstractAnnotationConfigDispatcherServletInitializer {
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{Config.class};
+        return new Class[]{Config.class, SecurityConfig.class};
     }
 
     protected Class<?>[] getServletConfigClasses() {

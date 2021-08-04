@@ -3,13 +3,13 @@ package com.crud.dao;
 import com.crud.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Component
@@ -17,69 +17,57 @@ import java.util.List;
 
 public class UserDAOImpl implements UserDAO {
 
-    private final EntityManagerFactory factory;
+    @PersistenceContext
+    private EntityManager manager;
 
     @Autowired
-    public UserDAOImpl(@Qualifier(value = "entityManagerFactory") EntityManagerFactory factory) {
-        this.factory = factory;
+    public UserDAOImpl(@Qualifier("getEntityManager") EntityManager manager) {
+        this.manager = manager;
+    }
+
+    @Transactional
+    public void saveNewUser(User user) {
+        manager.persist(user);
     }
 
     @Override
-    public void insert(User user) {
-        EntityManager manager = factory.createEntityManager();
-        try {
-            manager.getTransaction().begin();
-            manager.persist(user);
-            manager.getTransaction().commit();
-            manager.close();
-            System.err.println("User " + user.getLogin() + " have been added");
-        } catch (Exception e) {
-            System.err.println("Cant insert " + user.getLogin() + " exception : " + e.getMessage());
-
-        }
-    }
-
-    @Override
+    @Transactional
     public void deleteById(Long id) {
-        EntityManager manager = factory.createEntityManager();
-        try {
-            manager.getTransaction().begin();
-            User user = manager.find(User.class, id);
-            manager.remove(user);
-            manager.getTransaction().commit();
-            manager.close();
-            System.err.println("User " + user.getLogin() + " have been deleted");
-        } catch (Exception e) {
-            System.err.println("Cant delete  exception :" + e.getMessage());
-        }
+        manager.createQuery("delete from User u where u.id = :id").setParameter("id", id).executeUpdate();
     }
 
     @Override
-    public List<User> findAll() {
-        EntityManager manager = factory.createEntityManager();
-        List<User> userList = new ArrayList<>();
-        try {
-            userList = manager.createQuery("select u from User u", User.class).getResultList();
-            manager.close();
-        } catch (Exception e) {
-            System.out.println("Cant get all users : " + e.getMessage());
-        }
+    @Transactional
+    public List<User> findAllUsers() {
+        List<User> userList = manager.createQuery("from User", User.class).getResultList();
         return userList;
     }
 
     @Override
-    public void update(User user) {
-        EntityManager entityManager = factory.createEntityManager();
+    @Transactional
+    public void updateUser(User user) {
+        manager.merge(user);
+
+    }
+
+    @Override
+    @Transactional
+    public UserDetails findUserByLogin(String login) {
+        UserDetails user = null;
         try {
-            entityManager.getTransaction().begin();
-            entityManager.merge(user);
-            entityManager.getTransaction().commit();
-            entityManager.close();
-            System.out.println("User " + user.getLogin() + " have been updated");
+            user = manager
+                    .createQuery("select u from User u where u.login = :login", User.class)
+                    .setParameter("login", login)
+                    .getSingleResult();
+            System.err.println("UserDetails :" + user);
         } catch (Exception e) {
-            System.out.println("Cant update user exception :" + e.getMessage());
-
+            System.err.println("Cant get userDetails : " +e.getMessage());
         }
-
+        return user;
+    }
+    @Override
+    @Transactional
+    public User findUserById(Long id) {
+        return manager.find(User.class, id);
     }
 }
