@@ -23,11 +23,10 @@ import java.util.Set;
 public class Main {
 
     public static void main(String[] args) {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
-        UserService userService = context.getBean(UserServiceImpl.class);
-
+//        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
+//        UserService userService = context.getBean(UserServiceImpl.class);
 //        System.out.println(userService.loadUserByUsername("admin"));
-        RoleService roleDAO = context.getBean(RoleServiceImpl.class);
+//        RoleService roleDAO = context.getBean(RoleServiceImpl.class);
 //        System.out.println(roleDAO.findByName("ROLE_USER"));
 //        setUp(roleDAO);
 //        Role userRole = new Role("ROLE_USER");
@@ -49,13 +48,13 @@ public class Main {
 //        secondUser.setLogin("changedusername");
 //        secondUser.setId(2);
 //        userService.update(secondUser);
-        System.err.println(userService.findAllUsers());
-
-    }
-
-
-    private static void setUp(RoleService roleDAO) {
-        roleDAO.insert(new Role("ROLE_ADMIN"));
-        roleDAO.insert(new Role("ROLE_USER"));
+//        System.err.println(userService.findAllUsers());
+//
+//    }
+//
+//
+//    private static void setUp(RoleService roleDAO) {
+//        roleDAO.insert(new Role("ROLE_ADMIN"));
+//        roleDAO.insert(new Role("ROLE_USER"));
     }
 }

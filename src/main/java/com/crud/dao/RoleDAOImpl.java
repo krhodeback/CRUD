@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 @Component
@@ -47,9 +48,13 @@ public class RoleDAOImpl implements RoleDAO {
     @Override
     @Transactional
     public Role findByName(String name) {
-        return manager
-                .createQuery("select r from Role r where r.name = :name", Role.class)
-                .setParameter("name", name)
-                .getSingleResult();
+        try {
+            return manager
+                    .createQuery("select r from Role r where r.name = :name", Role.class)
+                    .setParameter("name", name)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 }
