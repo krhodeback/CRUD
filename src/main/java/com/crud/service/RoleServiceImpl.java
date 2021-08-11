@@ -9,6 +9,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Component
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -37,5 +39,10 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role findByName(String name) {
         return roleDAO.findByName(name);
+    }
+
+    @Override
+    public Set<Role> findAll() {
+        return roleDAO.findAll();
     }
 }

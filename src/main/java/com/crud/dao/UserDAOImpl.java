@@ -33,7 +33,6 @@ public class UserDAOImpl implements UserDAO {
 
     @Transactional
     public void saveNewUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         manager.persist(user);
     }
 
@@ -46,8 +45,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     @Transactional(readOnly = true)
     public List<User> findAllUsers() {
-        List<User> userList = manager.createQuery("from User", User.class).getResultList();
-        return userList;
+        return manager.createQuery("from User", User.class).getResultList();
     }
 
     @Override

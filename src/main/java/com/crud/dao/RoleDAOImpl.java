@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import java.util.Set;
 
 @Component
 @Repository
@@ -57,4 +58,11 @@ public class RoleDAOImpl implements RoleDAO {
             return null;
         }
     }
+
+    @Override
+    public Set<Role> findAll() {
+        return Set.copyOf(manager.createQuery("from Role", Role.class).getResultList());
+    }
+
+
 }

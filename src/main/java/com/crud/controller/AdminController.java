@@ -10,10 +10,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.GET;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Controller()
+@Controller
 public class AdminController {
 
     private final UserService userService;
@@ -37,23 +39,25 @@ public class AdminController {
         model.addAttribute("userList", userList);
         model.addAttribute("newUser", new User());
         model.addAttribute("updateUser", new User());
+        model.addAttribute("roleList", roleService.findAll());
+        model.addAttribute("newRolesList", new HashSet<Role>());
         return "users";
     }
 
-    @GetMapping("/admin/registration")
-    public String registration(Model model) {
-        model.addAttribute("user", new User());
-        return "registration";
-    }
 
-    @PostMapping("/admin/registration")
-    public String create(@ModelAttribute("user") User user, @RequestParam("role") String role) {
-        user.setRoles(Set.of(roleService.findByName(role)));
+    @PutMapping("/admin/registration")
+    public String create(@ModelAttribute("user") User user, @RequestParam("role") String... roleList) {
+        Set<Role> roleSet = new HashSet<>();
+        for (String role :
+                roleList) {
+            roleSet.add(roleService.findByName(role));
+        }
+        user.setRoles(roleSet);
         userService.saveNewUser(user);
         return "redirect:/admin/users";
     }
 
-    @PostMapping("/admin/delete")
+    @DeleteMapping("/admin/delete")
     public String delete(@RequestParam("id") Long id) {
         userService.deleteById(id);
         return "redirect:/admin/users";
@@ -76,15 +80,25 @@ public class AdminController {
         return "updateUser";
     }
 
-    @PostMapping("/admin/update")
+    @PutMapping("/admin/updateUser")
     public String update(
-            @RequestParam("id") Long id, @RequestParam("name") String name, @RequestParam("role") String roleName, @RequestParam("email") String email, @RequestParam("login") String login) {
-        Role role = roleService.findByName(roleName);
+            @RequestParam("id") Long id,
+            @RequestParam("name") String name,
+            @RequestParam("email") String email,
+            @RequestParam("login") String login,
+            @RequestParam("password") String password,
+            @RequestParam("role") String... roleList) {
+        Set<Role> roleSet = new HashSet<>();
+        for (String role :
+                roleList) {
+            roleSet.add(roleService.findByName(role));
+        }
         User user = userService.findUserById(id);
+        user.setPassword(password);
         user.setLogin(login);
         user.setEmail(email);
         user.setName(name);
-        user.setRoles(Set.of(role));
+        user.setRoles(roleSet);
         userService.updateUser(user);
         return "redirect:/admin/user/" + user.getId();
     }

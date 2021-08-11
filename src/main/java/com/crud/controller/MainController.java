@@ -28,18 +28,6 @@ public class MainController {
     }
 
 
-    //    @PostMapping("/update")
-//    public String update(@RequestParam("id") Long id, @RequestParam("login") String login, @RequestParam("email") String email) {
-//        User user
-//        user.setId(id);
-//        userService.update(user);
-//        return "redirect:/";
-//    }
-    @GetMapping("/user/{id}")
-    public String userPage(@PathVariable("id") Long id, Model model) {
-
-        return "/WEB-INF/pages/adminUser.html";
-    }
 
 
 }
