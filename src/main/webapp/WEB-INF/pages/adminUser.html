@@ -14,7 +14,7 @@
     <tr th:each="role : ${user.getRoles()}">
         <p><span th:utext="${role.name}"></span></p>
     </tr>
-    <a th:href="@{/admin/user/{id}/update (id=${user.id})}">Edit User</a>
+    <a th:href="@{/crud/admin/user/{id}/update (id=${user.id})}">Edit User</a>
 </div>
 
 <a href="/crud/admin/users">Back</a> <br>

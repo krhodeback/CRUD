@@ -22,20 +22,18 @@
         <td th:text="${user.name}"></td>
         <td>
 
-            <form th:method="post" th:action="@{/admin/delete}" th:object="${user}">
-                <input type="hidden" name="_method" value="delete" />
+            <form th:method="delete" th:action="@{/crud/admin/delete}" th:object="${user}">
                 <input type="hidden" name="id" th:value="${user.getId()}">
                 <input type="submit" value="delete">
 
             </form>
         </td>
         <td>
-            <a th:href="@{/admin/user/{id}(id=${user.id})}">User Page</a>
+            <a th:href="@{/crud/admin/user/{id}(id=${user.id})}">User Page</a>
         </td>
     </tr>
     <tr>
-        <form  method="post" th:action="@{/admin/registration}" th:object="${newUser}">
-            <input type="hidden" name="_method" value="put" />
+        <form  method="post" th:action="@{/crud/admin/registration}" th:object="${newUser}">
             <td><input type="text" placeholder="Login" th:field="*{login}"></td>
             <td><input type="text" placeholder="E-Mail" th:field="*{email}"></td>
             <td><input type="text" placeholder="Name" th:field="*{name}"></td>

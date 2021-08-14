@@ -3,6 +3,8 @@ package com.crud.config;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -25,7 +27,8 @@ import java.util.Properties;
 @PropertySource(value = "classpath:db.properties")
 @EnableTransactionManagement
 @ComponentScan(basePackages = {"com.crud.dao", "com.crud.service"})
-
+@SpringBootConfiguration
+@EnableAutoConfiguration
 public class Config {
     Environment env;
 
@@ -82,6 +85,11 @@ public class Config {
         return transactionManager;
     }
 
+
+    @Bean
+    public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
+        return new HiddenHttpMethodFilter();
+    }
 
 
 

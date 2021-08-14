@@ -5,6 +5,8 @@ import com.crud.entity.User;
 import com.crud.service.RoleService;
 import com.crud.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,13 +18,14 @@ import java.util.List;
 import java.util.Set;
 
 @Controller
+@RequestMapping("/crud")
 public class AdminController {
 
     private final UserService userService;
     private final RoleService roleService;
 
     @Autowired
-    public AdminController(UserService userService, RoleService roleService) {
+    public AdminController( UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
@@ -45,7 +48,7 @@ public class AdminController {
     }
 
 
-    @PutMapping("/admin/registration")
+    @PostMapping("/admin/registration")
     public String create(@ModelAttribute("user") User user, @RequestParam("role") String... roleList) {
         Set<Role> roleSet = new HashSet<>();
         for (String role :
@@ -54,13 +57,13 @@ public class AdminController {
         }
         user.setRoles(roleSet);
         userService.saveNewUser(user);
-        return "redirect:/admin/users";
+        return "redirect:/crud/admin/users";
     }
 
     @DeleteMapping("/admin/delete")
     public String delete(@RequestParam("id") Long id) {
         userService.deleteById(id);
-        return "redirect:/admin/users";
+        return "redirect:/crud/admin/users";
     }
 
     @GetMapping("/admin/user/{id}")
@@ -100,7 +103,7 @@ public class AdminController {
         user.setName(name);
         user.setRoles(roleSet);
         userService.updateUser(user);
-        return "redirect:/admin/user/" + user.getId();
+        return "redirect:/crud/admin/user/" + user.getId();
     }
 
 
