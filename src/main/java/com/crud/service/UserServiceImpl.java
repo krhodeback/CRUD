@@ -1,6 +1,6 @@
 package com.crud.service;
 
-import com.crud.dao.UserDAO;
+import com.crud.dao.UserRepository;
 import com.crud.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,11 +16,11 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserDAO userDAO;
+    private final UserRepository userDAO;
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserDAO userDAO) {
+    public UserServiceImpl(UserRepository userDAO) {
         this.userDAO = userDAO;
         passwordEncoder = new BCryptPasswordEncoder();
     }
@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void saveNewUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userDAO.saveNewUser(user);
+        userDAO.save(user);
     }
 
     @Override
@@ -38,28 +38,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findAllUsers() {
-        return userDAO.findAllUsers();
+        return userDAO.findAll();
     }
 
     @Override
     public void updateUser(User user) {
-        User dbUser = userDAO.findUserById(user.getId());
+        User dbUser = userDAO.findById(user.getId()).get();
         String password = user.getPassword();
         if (password.equals("") || passwordEncoder.matches(password, dbUser.getPassword())) {
             user.setPassword(dbUser.getPassword());
         } else {
             user.setPassword(passwordEncoder.encode(password));
         }
-        userDAO.updateUser(user);
+        userDAO.save(dbUser);
     }
 
     @Override
     public User findUserById(Long id) {
-        return userDAO.findUserById(id);
+        return userDAO.findById(id).get();
     }
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return userDAO.findUserByLogin(s);
+        return userDAO.findByLogin(s);
     }
 }

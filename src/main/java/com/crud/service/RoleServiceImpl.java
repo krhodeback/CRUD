@@ -1,7 +1,6 @@
 package com.crud.service;
 
-import com.crud.dao.RoleDAO;
-import com.crud.dao.RoleDAOImpl;
+import com.crud.dao.RoleRepository;
 import com.crud.entity.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,26 +8,29 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Component
 @Service
 public class RoleServiceImpl implements RoleService {
-    private final RoleDAO roleDAO;
+
+
+    private final RoleRepository roleDAO;
 
     @Autowired
-    public RoleServiceImpl(RoleDAO roleDAO) {
+    public RoleServiceImpl(RoleRepository roleDAO) {
         this.roleDAO = roleDAO;
     }
 
     @Override
     public void insert(Role role) {
-        roleDAO.insert(role);
+        roleDAO.save(role);
     }
 
     @Override
     public Role findById(Long id) {
-        return roleDAO.findById(id);
+        return roleDAO.findById(id).get();
     }
 
     @Override
@@ -43,6 +45,6 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Set<Role> findAll() {
-        return roleDAO.findAll();
+        return new HashSet<>(roleDAO.findAll());
     }
 }
