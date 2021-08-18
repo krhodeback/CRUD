@@ -18,9 +18,9 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/user")
+    @GetMapping("/crud/user")
     public String getUserPage(Model model){
-        model.addAttribute("user", (User) userService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
+        model.addAttribute("authorizedUser", (User) userService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
         return "user";
     }
 }

@@ -25,26 +25,17 @@ public class AdminController {
     private final RoleService roleService;
 
     @Autowired
-    public AdminController( UserService userService, RoleService roleService) {
+    public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
 
     @GetMapping("/admin")
     public String getAdminPage(Model model) {
-        model.addAttribute("user", (User) userService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
-        return "admin";
-    }
-
-    @GetMapping("/admin/users")
-    public String getUsersPage(Model model) {
-        List<User> userList = userService.findAllUsers();
-        model.addAttribute("userList", userList);
+        model.addAttribute("authorizedUser", (User) userService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
+        model.addAttribute("userList", userService.findAllUsers());
         model.addAttribute("newUser", new User());
-        model.addAttribute("updateUser", new User());
-        model.addAttribute("roleList", roleService.findAll());
-        model.addAttribute("newRolesList", new HashSet<Role>());
-        return "users";
+        return "admin";
     }
 
 
@@ -57,40 +48,24 @@ public class AdminController {
         }
         user.setRoles(roleSet);
         userService.saveNewUser(user);
-        return "redirect:/crud/admin/users";
+        return "redirect:/crud/admin";
     }
 
     @DeleteMapping("/admin/delete")
     public String delete(@RequestParam("id") Long id) {
         userService.deleteById(id);
-        return "redirect:/crud/admin/users";
+        return "redirect:/crud/admin";
     }
 
-    @GetMapping("/admin/user/{id}")
-    public String getUserPage(@PathVariable("id") Long id, Model model) {
-        User user = userService.findUserById(id);
-        model.addAttribute("user", user);
-        return "adminUser";
-    }
-
-    @GetMapping("/admin/user/{id}/update")
-    public String updateUser(@PathVariable("id") Long id, Model model) {
-        User user = userService.findUserById(id);
-        model.addAttribute("user", user);
-        User updateUser = new User();
-        updateUser.setId(id);
-        model.addAttribute("updateUser", updateUser);
-        return "updateUser";
-    }
 
     @PutMapping("/admin/updateUser")
     public String update(
-            @RequestParam("id") Long id,
-            @RequestParam("name") String name,
-            @RequestParam("email") String email,
-            @RequestParam("login") String login,
-            @RequestParam("password") String password,
-            @RequestParam("role") String... roleList) {
+            @RequestParam("userid") Long id,
+            @RequestParam("username") String name,
+            @RequestParam("useremail") String email,
+            @RequestParam("userlogin") String login,
+            @RequestParam("userpassword") String password,
+            @RequestParam("userrole") String... roleList) {
         Set<Role> roleSet = new HashSet<>();
         for (String role :
                 roleList) {
@@ -103,7 +78,7 @@ public class AdminController {
         user.setName(name);
         user.setRoles(roleSet);
         userService.updateUser(user);
-        return "redirect:/crud/admin/user/" + user.getId();
+        return "redirect:/crud/admin";
     }
 
 
