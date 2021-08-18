@@ -56,11 +56,6 @@ public class Config {
         properties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
         properties.setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
         properties.setProperty("hibernate.enable_lazy_load_no_trans",env.getProperty("hibernate.enable_lazy_load_no_trans"));
-//        properties.setProperty("hibernate.connection.autocommit", env.getProperty("hibernate.connection.autocommit"));
-//        properties.setProperty("hibernate.c3p0.min_size", env.getProperty("hibernate.c3p0.min_size"));
-//        properties.setProperty("hibernate.c3p0.max_size", env.getProperty("hibernate.c3p0.max_size"));
-//        properties.setProperty("hibernate.c3p0.timeout", env.getProperty("hibernate.c3p0.timeout"));
-
         return properties;
     }
 
@@ -72,7 +67,6 @@ public class Config {
         dataSourceConfig.setUsername(env.getRequiredProperty("db.username"));
         dataSourceConfig.setPassword(env.getRequiredProperty("db.password"));
         dataSourceConfig.setAutoCommit(true);
-//        dataSourceConfig.addDataSourceProperty("autoReconnect", true);
         dataSourceConfig.setMaxLifetime(45000);
         return new HikariDataSource(dataSourceConfig);
     }
