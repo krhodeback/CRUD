@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
         } else {
             user.setPassword(passwordEncoder.encode(password));
         }
-        userDAO.save(dbUser);
+        userDAO.save(user);
     }
 
     @Override

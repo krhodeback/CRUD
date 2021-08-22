@@ -32,7 +32,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final RoleService roleService;
 
     @Autowired
-    public SecurityConfig(LoginSuccessHandler successHandler, UserDetailsService userDetailsService, RoleService roleService) {
+    public SecurityConfig(
+            LoginSuccessHandler successHandler, UserDetailsService
+            userDetailsService,
+            RoleService roleService) {
         this.successHandler = successHandler;
         this.userDetailsService = userDetailsService;
         this.roleService = roleService;
@@ -84,6 +87,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             UserService userService = (UserService) userDetailsService;
             userService.saveNewUser(admin);
         }
+        UserService userService = (UserService) userDetailsService;
+        if (userService.findAllUsers().size() < 2) {
+            for (int i = 2; i < 20; i++) {
+                User user = new User();
+                user.setName("username" + i);
+                user.setLogin("user" + i);
+                user.setEmail("user" + i + "@mail.ru");
+                user.setPassword(String.valueOf(i) + String.valueOf(i) + String.valueOf(i));
+                if (i % 2 == 0) {
+                    user.setRoles(Set.of(roleService.findByName("ROLE_USER"), roleService.findByName("ROLE_ADMIN")));
+                } else {
+                    user.setRoles(Set.of(roleService.findByName("ROLE_USER")));
+                }
+                userService.saveNewUser(user);
+            }
+        }
+
     }
 
     private void rolesSetUp() {
